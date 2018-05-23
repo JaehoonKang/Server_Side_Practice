@@ -19,7 +19,8 @@ const templates = {
   postList: document.querySelector('#post-list').content,
   postItem: document.querySelector('#post-item').content,
   postContent: document.querySelector('#post-content').content,
-  login: document.querySelector("#login").content
+  login: document.querySelector("#login").content,
+  postForm: document.querySelector('#post-form').content
 }
 
 
@@ -33,17 +34,20 @@ async function indexPage(){
   const res = await postAPI.get('http://localhost:3000/posts');
 
   const listFragment = document.importNode(templates.postList, true);
-    
+
   listFragment.querySelector('.post-list__login-btn').addEventListener('click', e => {
     loginPage();
   })
+
+  listFragment.querySelector('.post-list__new-post-btn').addEventListener('click', e => {
+    postFormPage();
+  });
 
   listFragment.querySelector('.post-list__logout-btn').addEventListener('click', e => {
     localStorage.removeItem('token');
     delete postAPI.defaults.headers['Authorization'];
     rootEl.classList.remove('root--authed')
     indexPage();
-    
   })
     res.data.forEach(post => {
   
@@ -78,6 +82,8 @@ async function postContentPage(postId){
   render(fragment);
 } 
 
+
+
 async function loginPage(){
   const fragment = document.importNode(templates.login, true);
   const formEl = fragment.querySelector('.login__form');
@@ -87,6 +93,7 @@ async function loginPage(){
       password: e.target.elements.password.value
     }
     e.preventDefault();
+
     const res = await postAPI.post('http://localhost:3000/users/login', payload);
     // alert(res.data.token);
     localStorage.setItem('token', res.data.token);
@@ -95,6 +102,32 @@ async function loginPage(){
     indexPage();
   })
   render(fragment);
+};
+
+
+
+//새글쓰기에 관한 함수
+
+async function postFormPage(){
+  const fragment = document.importNode(templates.postForm, true);
+  fragment.querySelector('.post-form__back-btn').addEventListener('click', e => {
+    e.preventDefault();
+    indexPage();
+  });
+  
+  fragment.querySelector('.post-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    
+    const payload = {
+      title: e.target.elements.title.value,
+      body: e.target.elements.body.value
+    };
+    const res = await postAPI.post('http://localhost:3000/posts', payload);
+    console.log(res);
+    postContentPage(res.data.id);
+  })
+  render(fragment);
+
 };
 
 indexPage();
