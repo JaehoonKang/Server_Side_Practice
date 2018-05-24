@@ -39,9 +39,12 @@ body {
       right: 0;
       bottom: 0;
       left: 0;
-      content: 'Loading...';
+      content: 'Loading... Please Wait :)';
+      padding-top:300px;
+      padding-left: 300px;
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
+      font-size: 50px;
     }
   }
 }
