@@ -23,6 +23,7 @@
   </template>
 
   <template id="post-item">
+    <p class="post-item__author"></p>
     <p class="post-item__title"></p>
   </template>
 
@@ -58,8 +59,13 @@
     </form>
   </template>
 
+  <!-- 코멘트달기 -->
   <template id="comments">
     <div class="comments__list"></div>
+    <form class="comments__form">
+      <input name="body" type="text" class="comments__body-input">
+      <button class="comments__submit-btn">전송</button>
+    </form>
   </template>
 
   <template id="comment-item">

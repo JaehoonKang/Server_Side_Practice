@@ -37,8 +37,7 @@ function render(fragment) {
 }
 
 async function indexPage() {
-  const res = await postAPI.get("/posts");
-
+  const res = await postAPI.get("/posts?_expand=user");
   const listFragment = document.importNode(templates.postList, true);
 
   listFragment
@@ -59,8 +58,12 @@ async function indexPage() {
       logout();
       indexPage();
     });
+
+    //오류발견
   res.data.forEach(post => {
     const fragment = document.importNode(templates.postItem, true);
+    fragment.querySelector('.post-item__author').textContent = post.user.username;
+    
     const pEl = fragment.querySelector(".post-item__title");
 
     pEl.textContent = post.title;
@@ -94,6 +97,16 @@ async function postContentPage(postId) {
       const itemFragment = document.importNode(templates.commentItem, true);
       itemFragment.querySelector('.comment-item__body').textContent = comment.body;
       commentsFragment.querySelector('.comments__list').appendChild(itemFragment);
+    });
+    const formEl = commentsFragment.querySelector('.comments__form');
+    formEl.addEventListener('submit', async e => {
+      e.preventDefault();
+      const payload = {
+        body: e.target.elements.body.value
+      };
+      const res = await postAPI.post(`/posts/${postId}/comments`, payload);
+      postContentPage(postId);
+
     });
     fragment.appendChild(commentsFragment);
   }
