@@ -3,7 +3,8 @@ import axios from "axios";
 const postAPI = axios.create({
   baseURL: process.env.API_URL
 });
-const rootEl = document.querySelector(".root");
+
+const rootEl = document.querySelector('.root');
 
 function login(token) {
   localStorage.setItem("token", token);
@@ -13,7 +14,7 @@ function login(token) {
 
 function logout() {
   localStorage.removeItem("token");
-  delete postAPI.defaults.headers["Authorization"];
+  delete postAPI.dDefaults.headers["Authorization"];
   rootEl.classList.remove("root--authed");
 }
 
@@ -67,7 +68,6 @@ async function indexPage() {
     fragment.querySelector('.post-item__author').textContent = post.user.username;
     
     const pEl = fragment.querySelector(".post-item__title");
-
     pEl.textContent = post.title;
 
     pEl.addEventListener("click", e => {
@@ -79,6 +79,7 @@ async function indexPage() {
 
   render(listFragment);
 }
+
 
 async function postContentPage(postId) {
   rootEl.classList.add('root--loading');
