@@ -1,7 +1,3 @@
-// document.querySelector('h1').addEventListener('click', e => {
-//   alert('Hello World!');
-// });
-
 import axios from "axios";
 
 const postAPI = axios.create({
@@ -112,9 +108,26 @@ async function postContentPage(postId) {
 
     commentsRes.data.forEach(comment => {
       const itemFragment = document.importNode(templates.commentItem, true);
-      itemFragment.querySelector('.comment-item__body').textContent = comment.body;
+      const bodyEl = itemFragment.querySelector('.comment-item__body');
+      const removeButtonEl = itemFragment.querySelector('.comment-item__remove-btn')
+      
+      bodyEl.textContent = comment.body;
       commentsFragment.querySelector('.comments__list').appendChild(itemFragment);
+      removeButtonEl.addEventListener('click', async e => {
+        //p태그 와 button  태그 삭제
+        bodyEl.remove();
+        removeButtonEl.remove();
+
+        //delete 요청 보내기
+        const res = await postAPI.delete(`/comments/${comment.id}`);
+        //만약 요청이 실패했을 경우
+      });
+      // itemFragment.querySelector('.comment-item__remove-btn').addEventListener('click', e => {
+
+      // })  
     });
+
+
 
     // 0524
     const formEl = commentsFragment.querySelector('.comments__form');
@@ -131,8 +144,16 @@ async function postContentPage(postId) {
       rootEl.classList.remove('root--loading');
 
       postContentPage(postId);
-
     });
+
+
+    // const commentButton = commentsFragment.querySelector('.comment-item__remove-btn');
+    // commentButton.addEventListener('click', e => {
+      
+    //   commentsFragment.querySelector('.comment-item__body').remove();
+    // });
+
+
     fragment.appendChild(commentsFragment);
   }
   render(fragment);
@@ -194,5 +215,5 @@ if (localStorage.getItem("token")) {
   login(localStorage.getItem("token"));
 }
 
+
 indexPage();
-// postContentPage(1);
