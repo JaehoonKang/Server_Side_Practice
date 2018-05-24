@@ -37,7 +37,13 @@ function render(fragment) {
 }
 
 async function indexPage() {
-  const res = await postAPI.get("/posts?_expand=user");
+  rootEl.classList.add('root--loading');
+  
+  const res = await postAPI.get("/posts?_expand=user"); //오래걸리는 부분(통신!)
+  
+  rootEl.classList.remove('root--loading');
+  
+
   const listFragment = document.importNode(templates.postList, true);
 
   listFragment
@@ -59,7 +65,7 @@ async function indexPage() {
       indexPage();
     });
 
-    //오류발견
+    //오류발견 0523
   res.data.forEach(post => {
     const fragment = document.importNode(templates.postItem, true);
     fragment.querySelector('.post-item__author').textContent = post.user.username;
@@ -98,6 +104,8 @@ async function postContentPage(postId) {
       itemFragment.querySelector('.comment-item__body').textContent = comment.body;
       commentsFragment.querySelector('.comments__list').appendChild(itemFragment);
     });
+
+    // 0524
     const formEl = commentsFragment.querySelector('.comments__form');
     formEl.addEventListener('submit', async e => {
       e.preventDefault();
